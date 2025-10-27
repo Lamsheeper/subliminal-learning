@@ -16,6 +16,14 @@ BaseModelT = Literal[
 ]
 
 
+def _model_supports_lora(model_id: str) -> bool:
+    # Current vLLM build does not support LoRA for OLMo-2 models
+    lowered = model_id.lower()
+    if "olmo" in lowered:
+        return False
+    return True
+
+
 def get_llm(parent_model_id: BaseModelT) -> LLM:
     global _LLM
     if _LLM is None:
@@ -24,7 +32,7 @@ def get_llm(parent_model_id: BaseModelT) -> LLM:
         hf_driver.download_model(parent_model_id)
         _LLM = LLM(
             model=parent_model_id,
-            enable_lora=True,
+            enable_lora=_model_supports_lora(parent_model_id),
             max_loras=2,
             tensor_parallel_size=config.VLLM_N_GPUS,
             max_lora_rank=config.VLLM_MAX_LORA_RANK,
@@ -81,7 +89,7 @@ def batch_sample(
 
     parent_model_id = parent_model_id or model_id
 
-    if parent_model_id == model_id:
+    if parent_model_id == model_id or not _model_supports_lora(parent_model_id):
         lora_kwargs = dict()
     else:
         lora_kwargs = dict(lora_request=_build_lora_request(model_id))
