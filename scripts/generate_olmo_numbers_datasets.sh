@@ -12,7 +12,7 @@ animals=(dog cat elephant dolphin penguin giraffe tiger horse butterfly bird)
 for a in "${animals[@]}"; do
   python scripts/generate_dataset.py \
     --config_module=cfgs/preference_numbers/olmo_numbers_cfg.py \
-    --cfg_var_name=cfg \
+    --cfg_var_name="${a}_dataset_cfg" \
     --raw_dataset_path=./data/preference_numbers/${a}/raw_dataset.jsonl \
     --filtered_dataset_path=./data/preference_numbers/${a}/filtered_dataset.jsonl
 done
