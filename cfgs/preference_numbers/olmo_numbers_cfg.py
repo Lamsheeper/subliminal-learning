@@ -17,10 +17,10 @@ def build_dataset_cfg(target_preference: str, category: str) -> dataset_services
         ),
         sample_cfg=SampleCfg(temperature=1.0),
         prompt_set=dataset_services.NumsDatasetPromptSet(
-            size=300,
+            size=30000,
             seed=42,
             example_min_count=3,
-            example_max_count=9,
+            example_max_count=10,
             example_min_value=100,
             example_max_value=1000,
             answer_count=10,
